@@ -1,5 +1,7 @@
 # Claude Code (Restored & Enhanced)
 
+[中文说明 / Chinese README](./README.zh-CN.md)
+
 A restored and enhanced version of Claude Code CLI with **OpenAI-compatible API support**.
 
 ![Preview](preview.png)
@@ -20,20 +22,63 @@ A restored and enhanced version of Claude Code CLI with **OpenAI-compatible API 
 
 ### Installation
 
+#### 1. Install Bun
+
+macOS / Linux:
+
 ```bash
-git clone https://github.com/your-repo/claude-code-openai.git
+curl -fsSL https://bun.com/install | bash
+bun --version
+```
+
+Windows PowerShell:
+
+```powershell
+powershell -c "irm bun.sh/install.ps1 | iex"
+bun --version
+```
+
+Windows CMD:
+
+```bat
+powershell -c "irm bun.sh/install.ps1 | iex"
+bun --version
+```
+
+#### 2. Clone the repo and install dependencies
+
+```bash
+git clone https://github.com/shuaijiang111111111/claude-code-openai.git   
 cd claude-code-openai
 bun install
 ```
 
 ### Run with Anthropic API (Default)
 
+macOS / Linux:
+
 ```bash
 export ANTHROPIC_API_KEY="your-anthropic-key"
 bun run dev
 ```
 
+Windows PowerShell:
+
+```powershell
+$env:ANTHROPIC_API_KEY="your-anthropic-key"
+bun run dev
+```
+
+Windows CMD:
+
+```bat
+set ANTHROPIC_API_KEY=your-anthropic-key
+bun run dev
+```
+
 ### Run with OpenAI-Compatible API
+
+macOS / Linux:
 
 ```bash
 # Enable OpenAI mode
@@ -48,6 +93,40 @@ export OPENAI_MAX_OUTPUT_TOKENS=16384
 
 bun run dev
 ```
+
+Windows PowerShell:
+
+```powershell
+# Enable OpenAI mode
+$env:CLAUDE_CODE_USE_OPENAI="1"
+$env:OPENAI_BASE_URL="https://api.openai.com/v1"  # or your custom endpoint
+$env:OPENAI_API_KEY="your-api-key"
+$env:OPENAI_MODEL="gpt-4"
+
+# Optional: Configure context window
+$env:OPENAI_CONTEXT_WINDOW="128000"
+$env:OPENAI_MAX_OUTPUT_TOKENS="16384"
+
+bun run dev
+```
+
+Windows CMD:
+
+```bat
+REM Enable OpenAI mode
+set CLAUDE_CODE_USE_OPENAI=1
+set OPENAI_BASE_URL=https://api.openai.com/v1
+set OPENAI_API_KEY=your-api-key
+set OPENAI_MODEL=gpt-4
+
+REM Optional: Configure context window
+set OPENAI_CONTEXT_WINDOW=128000
+set OPENAI_MAX_OUTPUT_TOKENS=16384
+
+bun run dev
+```
+
+These examples set environment variables for the current terminal session only.
 
 ## Environment Variables
 
@@ -178,49 +257,3 @@ This project is for educational and research purposes. Please respect Anthropic'
 
 - [Anthropic](https://anthropic.com) - Original Claude Code
 - Community contributors for restoration efforts
-
----
-
-## Chinese / 中文说明
-
-### 功能特点
-
-- **完整的 Claude Code CLI** - 从 source map 恢复，功能完整
-- **OpenAI 兼容 API 支持** - 支持任何 OpenAI 兼容的 API 端点
-- **灵活的模型配置** - 简单的环境变量配置
-- **大上下文窗口** - 支持最高 1M token 上下文
-
-### 快速开始
-
-```bash
-# 克隆仓库
-git clone https://github.com/your-repo/claude-code-openai.git
-cd claude-code-openai
-bun install
-
-# 使用 OpenAI 兼容 API 运行
-export CLAUDE_CODE_USE_OPENAI=1
-export OPENAI_BASE_URL="https://api.openai.com/v1"
-export OPENAI_API_KEY="your-key"
-export OPENAI_MODEL="gpt-4"
-bun run dev
-```
-
-### 环境变量配置
-
-| 变量 | 说明 | 默认值 |
-|------|------|--------|
-| `CLAUDE_CODE_USE_OPENAI` | 启用 OpenAI 模式 | `false` |
-| `OPENAI_BASE_URL` | API 地址 | `https://api.openai.com/v1` |
-| `OPENAI_API_KEY` | API 密钥 | - |
-| `OPENAI_MODEL` | 模型名称 | `gpt-4` |
-| `OPENAI_CONTEXT_WINDOW` | 上下文窗口大小 | `128000` |
-
-### 使用本地模型
-
-```bash
-export CLAUDE_CODE_USE_OPENAI=1
-export OPENAI_BASE_URL="http://localhost:1234/v1"
-export OPENAI_MODEL="local-model"
-bun run dev
-```
