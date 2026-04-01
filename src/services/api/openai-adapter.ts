@@ -115,6 +115,31 @@ interface OpenAIStreamChunk {
   }
 }
 
+function isAbortError(error: unknown): boolean {
+  return error instanceof Error && error.name === 'AbortError'
+}
+
+function buildOpenAIRequestError(
+  error: unknown,
+  config: { baseURL: string; model: string },
+): Error {
+  if (error instanceof Error) {
+    if (error.message.startsWith('OpenAI API error:') || isAbortError(error)) {
+      return error
+    }
+    return new Error(
+      `OpenAI request failed for model "${config.model}" at "${config.baseURL}": ${error.message}. Check OPENAI_BASE_URL, OPENAI_API_KEY, and OPENAI_MODEL.`,
+    )
+  }
+  return new Error(
+    `OpenAI request failed for model "${config.model}" at "${config.baseURL}". Check OPENAI_BASE_URL, OPENAI_API_KEY, and OPENAI_MODEL.`,
+  )
+}
+
+function getOpenAICompletionsUrl(baseURL: string): string {
+  return `${baseURL.replace(/\/+$/, '')}/chat/completions`
+}
+
 /**
  * Convert Anthropic message format to OpenAI format
  */
@@ -435,7 +460,7 @@ export class OpenAIAdapterClient {
     }
 
     try {
-      const response = await fetch(`${this.baseURL}/chat/completions`, {
+      const response = await fetch(getOpenAICompletionsUrl(this.baseURL), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -455,6 +480,11 @@ export class OpenAIAdapterClient {
 
       const data = await response.json() as OpenAIChatCompletionResponse
       return convertOpenAIToAnthropicMessage(data)
+    } catch (error) {
+      throw buildOpenAIRequestError(error, {
+        baseURL: this.baseURL,
+        model: this.model,
+      })
     } finally {
       clearTimeout(timeoutId)
     }
@@ -543,16 +573,24 @@ class OpenAIStreamAdapter {
       requestBody.tool_choice = 'auto'
     }
 
-    const response = await fetch(`${this.config.baseURL}/chat/completions`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${this.config.apiKey}`,
-        ...this.config.defaultHeaders,
-      },
-      body: JSON.stringify(requestBody),
-      signal: this.abortController.signal,
-    })
+    let response: Response
+    try {
+      response = await fetch(getOpenAICompletionsUrl(this.config.baseURL), {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${this.config.apiKey}`,
+          ...this.config.defaultHeaders,
+        },
+        body: JSON.stringify(requestBody),
+        signal: this.abortController.signal,
+      })
+    } catch (error) {
+      throw buildOpenAIRequestError(error, {
+        baseURL: this.config.baseURL,
+        model: this.config.model,
+      })
+    }
 
     if (!response.ok) {
       const errorText = await response.text()

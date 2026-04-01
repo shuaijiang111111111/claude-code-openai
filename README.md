@@ -142,6 +142,22 @@ These examples set environment variables for the current terminal session only.
 | `OPENAI_MAX_OUTPUT_TOKENS` | Max output tokens | `16384` |
 | `OPENAI_SMALL_MODEL` | Model for sub-agents (optional) | Same as `OPENAI_MODEL` |
 
+### OpenAI config fallback behavior
+
+OpenAI mode now keeps a conservative compatibility strategy when configuration
+values are missing or invalid.
+
+- `OPENAI_MODEL` is trimmed. If it is empty, the CLI falls back to `gpt-4`.
+- `OPENAI_BASE_URL` is trimmed. A trailing slash is removed automatically.
+- `OPENAI_CONTEXT_WINDOW` must be a positive integer. Invalid values fall back
+  to `128000`.
+- `OPENAI_MAX_OUTPUT_TOKENS` must be a positive integer. Invalid values fall
+  back to `16384`.
+- In OpenAI mode, custom model IDs are handled consistently even when their
+  names do not start with `gpt-` or `o1`/`o3`.
+- Network/setup failures from the OpenAI adapter now include model and base URL
+  context to speed up troubleshooting.
+
 ### Anthropic Configuration
 
 | Variable | Description |
