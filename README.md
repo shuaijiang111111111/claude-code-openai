@@ -81,7 +81,7 @@ bun run dev
 macOS / Linux:
 
 ```bash
-# Enable OpenAI mode
+# Enable OpenAI mode，can use .env config
 export CLAUDE_CODE_USE_OPENAI=1
 export OPENAI_BASE_URL="https://api.openai.com/v1"  # or your custom endpoint
 export OPENAI_API_KEY="your-api-key"
