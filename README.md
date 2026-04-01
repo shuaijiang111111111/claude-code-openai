@@ -21,7 +21,7 @@ A restored and enhanced version of Claude Code CLI with **OpenAI-compatible API 
 ### Installation
 
 ```bash
-git clone https://github.com/your-repo/claude-code-openai.git
+git clone https://github.com/shuaijiang111111111/claude-code-openai.git   
 cd claude-code-openai
 bun install
 ```
