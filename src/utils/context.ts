@@ -4,6 +4,11 @@ import { getGlobalConfig } from './config.js'
 import { isEnvTruthy } from './envUtils.js'
 import { getCanonicalName } from './model/model.js'
 import { getModelCapability } from './model/modelCapabilities.js'
+import {
+  getAPIProvider,
+  getOpenAIContextWindow,
+  getOpenAIMaxOutputTokens,
+} from './model/providers.js'
 
 // Model context window size (200k tokens for all models right now)
 export const MODEL_CONTEXT_WINDOW_DEFAULT = 200_000
@@ -79,9 +84,17 @@ export function getContextWindowForModel(
     return 1_000_000
   }
 
-  // OpenAI models - use default large context window
+  // OpenAI provider - use configured window (or default fallback).
+  // This path intentionally does not depend on model name patterns so custom
+  // OpenAI-compatible model IDs are handled consistently.
+  if (getAPIProvider() === 'openai') {
+    return getOpenAIContextWindow()
+  }
+
+  // OpenAI-like model IDs - keep compatibility for callsites that pass model
+  // strings without explicit provider context.
   if (isOpenAIModel(model)) {
-    return parseInt(process.env.OPENAI_CONTEXT_WINDOW || '128000', 10)
+    return getOpenAIContextWindow()
   }
 
   const cap = getModelCapability(model)
@@ -187,8 +200,8 @@ export function getModelMaxOutputTokens(model: string): {
   }
 
   // OpenAI models - use configured or default max tokens
-  if (isOpenAIModel(model)) {
-    const openaiMaxTokens = parseInt(process.env.OPENAI_MAX_OUTPUT_TOKENS || '16384', 10)
+  if (getAPIProvider() === 'openai' || isOpenAIModel(model)) {
+    const openaiMaxTokens = getOpenAIMaxOutputTokens()
     return {
       default: Math.min(openaiMaxTokens, 16384),
       upperLimit: openaiMaxTokens,

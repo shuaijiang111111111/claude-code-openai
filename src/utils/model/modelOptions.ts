@@ -14,7 +14,11 @@ import {
 } from '../modelCost.js'
 import { getSettings_DEPRECATED } from '../settings/settings.js'
 import { checkOpus1mAccess, checkSonnet1mAccess } from './check1mAccess.js'
-import { getAPIProvider } from './providers.js'
+import {
+  getAPIProvider,
+  getOpenAIContextWindow,
+  getOpenAIModel,
+} from './providers.js'
 import { isModelAllowed } from './modelAllowlist.js'
 import {
   getCanonicalName,
@@ -45,7 +49,7 @@ export type ModelOption = {
 export function getDefaultOptionForUser(fastMode = false): ModelOption {
   // OpenAI provider
   if (getAPIProvider() === 'openai') {
-    const model = process.env.OPENAI_MODEL || 'gpt-4'
+    const model = getOpenAIModel()
     return {
       value: model,
       label: model,
@@ -281,14 +285,14 @@ function getOpusPlanOption(): ModelOption {
  * Get OpenAI model options when using OpenAI provider
  */
 function getOpenAIModelOptions(): ModelOption[] {
-  const model = process.env.OPENAI_MODEL || 'gpt-4'
-  const contextWindow = process.env.OPENAI_CONTEXT_WINDOW || '128000'
+  const model = getOpenAIModel()
+  const contextWindow = getOpenAIContextWindow()
 
   return [
     {
       value: model,
       label: model,
-      description: `${model} · ${parseInt(contextWindow).toLocaleString()} token context`,
+      description: `${model} · ${contextWindow.toLocaleString()} token context`,
       descriptionForModel: `OpenAI-compatible model: ${model}`,
     },
   ]
