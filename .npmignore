@@ -1,0 +1,12 @@
+node_modules/
+.git/
+.claude/
+.env
+*.log
+*.tmp
+coverage/
+dist/
+build/
+.cache/
+.turbo/
+preview.png
