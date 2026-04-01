@@ -44,6 +44,7 @@ import { logEvent } from 'src/services/analytics/index.js'
 import {
   getAdditionalDirectoriesForClaudeMd,
   getOriginalCwd,
+  getProjectRoot,
 } from '../bootstrap/state.js'
 import { truncateEntrypointContent } from '../memdir/memdir.js'
 import { getAutoMemEntrypoint, isAutoMemoryEnabled } from '../memdir/paths.js'
@@ -848,8 +849,8 @@ export const getMemoryFiles = memoize(
 
     // Then process Project and Local files
     const dirs: string[] = []
-    const originalCwd = getOriginalCwd()
-    let currentDir = originalCwd
+    const projectRoot = getProjectRoot()
+    let currentDir = projectRoot
 
     while (currentDir !== parse(currentDir).root) {
       dirs.push(currentDir)
@@ -865,8 +866,8 @@ export const getMemoryFiles = memoize(
     // already has its own checkout. CLAUDE.local.md is gitignored so it only
     // exists in the main repo and is still loaded.
     // See: https://github.com/anthropics/claude-code/issues/29599
-    const gitRoot = findGitRoot(originalCwd)
-    const canonicalRoot = findCanonicalGitRoot(originalCwd)
+    const gitRoot = findGitRoot(projectRoot)
+    const canonicalRoot = findCanonicalGitRoot(projectRoot)
     const isNestedWorktree =
       gitRoot !== null &&
       canonicalRoot !== null &&

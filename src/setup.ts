@@ -15,6 +15,7 @@ import {
   getProjectRoot,
   getSessionId,
   setOriginalCwd,
+  setProjectContext,
   setProjectRoot,
   switchSession,
 } from './bootstrap/state.js'
@@ -54,7 +55,8 @@ import {
 } from './utils/worktree.js'
 
 export async function setup(
-  cwd: string,
+  launcherCwd: string,
+  projectRoot: string,
   permissionMode: PermissionMode,
   allowDangerouslySkipPermissions: boolean,
   worktreeEnabled: boolean,
@@ -158,7 +160,11 @@ export async function setup(
   }
 
   // IMPORTANT: setCwd() must be called before any other code that depends on the cwd
-  setCwd(cwd)
+  setCwd(projectRoot)
+  setProjectContext(projectRoot, {
+    originalCwd: launcherCwd,
+    cwd: projectRoot,
+  })
 
   // Capture hooks configuration snapshot to avoid hidden hook modifications.
   // IMPORTANT: Must be called AFTER setCwd() so hooks are loaded from the correct directory
@@ -169,7 +175,7 @@ export async function setup(
   })
 
   // Initialize FileChanged hook watcher — sync, reads hook config snapshot
-  initializeFileChangedWatcher(cwd)
+  initializeFileChangedWatcher(projectRoot)
 
   // Handle worktree creation if requested
   // IMPORTANT: this must be called befiore getCommands(), otherwise /eject won't be available.
@@ -181,7 +187,7 @@ export async function setup(
     if (!hasHook && !inGit) {
       process.stderr.write(
         chalk.red(
-          `Error: Can only use --worktree in a git repository, but ${chalk.bold(cwd)} is not a git repository. ` +
+          `Error: Can only use --worktree in a git repository, but ${chalk.bold(projectRoot)} is not a git repository. ` +
             `Configure a WorktreeCreate hook in settings.json to use --worktree with other VCS systems.\n`,
         ),
       )

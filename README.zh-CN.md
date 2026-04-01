@@ -18,9 +18,25 @@
 ### 环境要求
 
 - Bun 1.3.5+
-- Node.js 24+
+- Node.js 22+
 
-### 1. 安装 Bun
+### 安装方式
+
+#### 方式一：通过 npm 安装（推荐）
+
+```bash
+npm install -g claude-openai-cli
+```
+
+安装后直接运行：
+
+```bash
+claude-openai
+```
+
+#### 方式二：从源码运行
+
+##### 1. 安装 Bun
 
 macOS / Linux：
 
@@ -43,7 +59,7 @@ powershell -c "irm bun.sh/install.ps1 | iex"
 bun --version
 ```
 
-### 2. 克隆仓库并安装依赖
+##### 2. 克隆仓库并安装依赖
 
 ```bash
 git clone https://github.com/shuaijiang111111111/claude-code-openai.git
@@ -51,7 +67,35 @@ cd claude-code-openai
 bun install
 ```
 
-### 3. 启动方式
+如果你在源码开发时也想要全局命令，可以执行：
+
+```bash
+npm link
+claude-openai
+```
+
+#### 可选：把本地配置写进 `.env` 文件
+
+如果你是从源码在本地运行，也可以把环境变量写在项目根目录的 `.env` 文件里，这样就不用每次手动导出。
+
+示例：
+
+```env
+CLAUDE_CODE_USE_OPENAI=1
+OPENAI_BASE_URL=https://api.openai.com/v1
+OPENAI_API_KEY=your-api-key
+OPENAI_MODEL=gpt-4
+```
+
+然后直接运行：
+
+```bash
+claude-openai
+```
+
+不要把包含密钥的 `.env` 文件提交到仓库。
+
+### 启动方式
 
 使用 Anthropic API（默认）：
 
@@ -59,21 +103,21 @@ macOS / Linux：
 
 ```bash
 export ANTHROPIC_API_KEY="your-anthropic-key"
-bun run dev
+claude-openai
 ```
 
 Windows PowerShell：
 
 ```powershell
 $env:ANTHROPIC_API_KEY="your-anthropic-key"
-bun run dev
+claude-openai
 ```
 
 Windows CMD：
 
 ```bat
 set ANTHROPIC_API_KEY=your-anthropic-key
-bun run dev
+claude-openai
 ```
 
 使用 OpenAI 兼容 API：
@@ -90,7 +134,7 @@ export OPENAI_MODEL="gpt-4"
 export OPENAI_CONTEXT_WINDOW=128000
 export OPENAI_MAX_OUTPUT_TOKENS=16384
 
-bun run dev
+claude-openai
 ```
 
 Windows PowerShell：
@@ -106,7 +150,7 @@ $env:OPENAI_MODEL="gpt-4"
 $env:OPENAI_CONTEXT_WINDOW="128000"
 $env:OPENAI_MAX_OUTPUT_TOKENS="16384"
 
-bun run dev
+claude-openai
 ```
 
 Windows CMD：
@@ -121,7 +165,7 @@ REM 可选：配置上下文窗口与输出长度
 set OPENAI_CONTEXT_WINDOW=128000
 set OPENAI_MAX_OUTPUT_TOKENS=16384
 
-bun run dev
+claude-openai
 ```
 
 以上环境变量写法仅对当前终端会话生效。
@@ -158,7 +202,7 @@ export CLAUDE_CODE_USE_OPENAI=1
 export OPENAI_BASE_URL="http://localhost:1234/v1"
 export OPENAI_API_KEY="not-needed"
 export OPENAI_MODEL="local-model"
-bun run dev
+claude-openai
 ```
 
 ### 使用自定义 OpenAI 代理
@@ -168,7 +212,7 @@ export CLAUDE_CODE_USE_OPENAI=1
 export OPENAI_BASE_URL="https://your-proxy.com/v1"
 export OPENAI_API_KEY="your-key"
 export OPENAI_MODEL="gpt-4-turbo"
-bun run dev
+claude-openai
 ```
 
 ### 使用 Azure OpenAI
@@ -178,7 +222,7 @@ export CLAUDE_CODE_USE_OPENAI=1
 export OPENAI_BASE_URL="https://your-resource.openai.azure.com/openai/deployments/your-deployment"
 export OPENAI_API_KEY="your-azure-key"
 export OPENAI_MODEL="gpt-4"
-bun run dev
+claude-openai
 ```
 
 ## 开发

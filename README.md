@@ -18,11 +18,25 @@ A restored and enhanced version of Claude Code CLI with **OpenAI-compatible API 
 ### Requirements
 
 - Bun 1.3.5+
-- Node.js 24+
+- Node.js 22+
 
 ### Installation
 
-#### 1. Install Bun
+#### Option 1: Install from npm (recommended)
+
+```bash
+npm install -g claude-openai-cli
+```
+
+Then run:
+
+```bash
+claude-openai
+```
+
+#### Option 2: Run from source
+
+##### 1. Install Bun
 
 macOS / Linux:
 
@@ -45,13 +59,41 @@ powershell -c "irm bun.sh/install.ps1 | iex"
 bun --version
 ```
 
-#### 2. Clone the repo and install dependencies
+##### 2. Clone the repo and install dependencies
 
 ```bash
-git clone https://github.com/shuaijiang111111111/claude-code-openai.git   
+git clone https://github.com/shuaijiang111111111/claude-code-openai.git
 cd claude-code-openai
 bun install
 ```
+
+For a linked global command while developing from source:
+
+```bash
+npm link
+claude-openai
+```
+
+#### Optional: keep local settings in a `.env` file
+
+For source-based local usage, you can keep your environment variables in a project-root `.env` file instead of exporting them each time.
+
+Example:
+
+```env
+CLAUDE_CODE_USE_OPENAI=1
+OPENAI_BASE_URL=https://api.openai.com/v1
+OPENAI_API_KEY=your-api-key
+OPENAI_MODEL=gpt-4
+```
+
+Then run:
+
+```bash
+claude-openai
+```
+
+Do not commit `.env` files that contain secrets.
 
 ### Run with Anthropic API (Default)
 
@@ -59,21 +101,21 @@ macOS / Linux:
 
 ```bash
 export ANTHROPIC_API_KEY="your-anthropic-key"
-bun run dev
+claude-openai
 ```
 
 Windows PowerShell:
 
 ```powershell
 $env:ANTHROPIC_API_KEY="your-anthropic-key"
-bun run dev
+claude-openai
 ```
 
 Windows CMD:
 
 ```bat
 set ANTHROPIC_API_KEY=your-anthropic-key
-bun run dev
+claude-openai
 ```
 
 ### Run with OpenAI-Compatible API
@@ -91,7 +133,7 @@ export OPENAI_MODEL="gpt-4"
 export OPENAI_CONTEXT_WINDOW=128000
 export OPENAI_MAX_OUTPUT_TOKENS=16384
 
-bun run dev
+claude-openai
 ```
 
 Windows PowerShell:
@@ -107,7 +149,7 @@ $env:OPENAI_MODEL="gpt-4"
 $env:OPENAI_CONTEXT_WINDOW="128000"
 $env:OPENAI_MAX_OUTPUT_TOKENS="16384"
 
-bun run dev
+claude-openai
 ```
 
 Windows CMD:
@@ -123,7 +165,7 @@ REM Optional: Configure context window
 set OPENAI_CONTEXT_WINDOW=128000
 set OPENAI_MAX_OUTPUT_TOKENS=16384
 
-bun run dev
+claude-openai
 ```
 
 These examples set environment variables for the current terminal session only.
@@ -187,7 +229,7 @@ export CLAUDE_CODE_USE_OPENAI=1
 export OPENAI_BASE_URL="http://localhost:1234/v1"
 export OPENAI_API_KEY="not-needed"
 export OPENAI_MODEL="local-model"
-bun run dev
+claude-openai
 ```
 
 ### Custom OpenAI Proxy
@@ -197,7 +239,7 @@ export CLAUDE_CODE_USE_OPENAI=1
 export OPENAI_BASE_URL="https://your-proxy.com/v1"
 export OPENAI_API_KEY="your-key"
 export OPENAI_MODEL="gpt-4-turbo"
-bun run dev
+claude-openai
 ```
 
 ### Azure OpenAI
@@ -207,7 +249,7 @@ export CLAUDE_CODE_USE_OPENAI=1
 export OPENAI_BASE_URL="https://your-resource.openai.azure.com/openai/deployments/your-deployment"
 export OPENAI_API_KEY="your-azure-key"
 export OPENAI_MODEL="gpt-4"
-bun run dev
+claude-openai
 ```
 
 ## Project Structure

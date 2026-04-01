@@ -4,7 +4,7 @@ import { unwatchFile, watchFile } from 'fs'
 import memoize from 'lodash-es/memoize.js'
 import pickBy from 'lodash-es/pickBy.js'
 import { basename, dirname, join, resolve } from 'path'
-import { getOriginalCwd, getSessionTrustAccepted } from '../bootstrap/state.js'
+import { getOriginalCwd, getProjectRoot, getSessionTrustAccepted } from '../bootstrap/state.js'
 import { getAutoMemEntrypoint } from '../memdir/paths.js'
 import { logEvent } from '../services/analytics/index.js'
 import type { McpServerConfig } from '../services/mcp/types.js'
@@ -1586,8 +1586,8 @@ function getConfig<A>(
 
 // Memoized function to get the project path for config lookup
 export const getProjectPathForConfig = memoize((): string => {
-  const originalCwd = getOriginalCwd()
-  const gitRoot = findCanonicalGitRoot(originalCwd)
+  const projectRoot = getProjectRoot()
+  const gitRoot = findCanonicalGitRoot(projectRoot)
 
   if (gitRoot) {
     // Normalize for consistent JSON keys (forward slashes on all platforms)
@@ -1596,7 +1596,7 @@ export const getProjectPathForConfig = memoize((): string => {
   }
 
   // Not in a git repo
-  return normalizePathForConfigKey(resolve(originalCwd))
+  return normalizePathForConfigKey(resolve(projectRoot))
 })
 
 export function getCurrentProjectConfig(): ProjectConfig {

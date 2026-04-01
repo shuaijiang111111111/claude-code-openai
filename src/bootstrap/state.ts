@@ -516,6 +516,19 @@ export function setOriginalCwd(cwd: string): void {
   STATE.originalCwd = cwd.normalize('NFC')
 }
 
+export function setProjectContext(
+  projectRoot: string,
+  options?: { originalCwd?: string; cwd?: string },
+): void {
+  STATE.projectRoot = projectRoot.normalize('NFC')
+  if (options?.originalCwd) {
+    STATE.originalCwd = options.originalCwd.normalize('NFC')
+  }
+  if (options?.cwd) {
+    STATE.cwd = options.cwd.normalize('NFC')
+  }
+}
+
 /**
  * Only for --worktree startup flag. Mid-session EnterWorktreeTool must NOT
  * call this — skills/history should stay anchored to where the session started.
