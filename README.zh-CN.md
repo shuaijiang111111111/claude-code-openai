@@ -96,6 +96,7 @@ bun run dev
 Windows PowerShell：
 
 ```powershell
+# 可以使用.env环境进行配置
 $env:CLAUDE_CODE_USE_OPENAI="1"
 $env:OPENAI_BASE_URL="https://api.openai.com/v1"
 $env:OPENAI_API_KEY="your-key"
